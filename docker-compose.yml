@@ -1,0 +1,72 @@
+version: "3.5"
+
+volumes:
+  vol-downloads:
+    name: downloader-downloads
+  vol-transcode:
+    name: plex-transcode
+
+services:
+
+  # Nginx Proxy ================================================================
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - 80:80
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+      - ./nginx/dhparam:/etc/nginx/dhparam
+
+  # Plex Media Server ==========================================================
+  plex:
+    image: plexinc/pms-docker:plexpass
+    network_mode: host
+    volumes:
+      - ./plex:/config
+      - /drobo:/data:ro
+      - vol-transcode:/transcode
+    env_file: ./env
+
+  tautulli:
+    image: tautulli/tautulli
+    volumes:
+      - ./tautulli:/config
+      - ./plex/Library/Application Support/Plex Media Server/Logs:/logs:ro
+    env_file: ./env
+    environment:
+      - VIRTUAL_HOST=tautulli.space-heater
+      - VIRTUAL_PORT=8181
+
+  # Downloaders ================================================================
+  nzbget:
+    image: linuxserver/nzbget
+    volumes:
+      - ./nzbget:/config
+      - vol-downloads:/downloads
+    env_file: ./env
+    environment:
+      - VIRTUAL_HOST=nzbget.space-heater
+      - VIRTUAL_PORT=6789
+
+  sonarr:
+    image: linuxserver/sonarr
+    volumes:
+      - ./sonarr:/config
+      - /drobo/Unsorted:/tv
+      - vol-downloads:/downloads
+    env_file: ./env
+    environment:
+      - VIRTUAL_HOST=sonarr.space-heater
+      - VIRTUAL_PORT=8989
+
+  radarr:
+    image: linuxserver/radarr
+    volumes:
+      - ./radarr:/config
+      - /drobo/Movies:/movies
+      - vol-downloads:/downloads
+    env_file: ./env
+    environment:
+      - VIRTUAL_HOST=radarr.space-heater
+      - VIRTUAL_PORT=7878
