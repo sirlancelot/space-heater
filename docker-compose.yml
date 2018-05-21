@@ -27,6 +27,9 @@ services:
       - /drobo:/data:ro
       - vol-transcode:/transcode
     env_file: ./env
+    environment:
+      - CHANGE_CONFIG_DIR_OWNERSHIP=true
+      - PLEX_CLAIM=
 
   tautulli:
     image: tautulli/tautulli
