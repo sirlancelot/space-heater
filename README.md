@@ -4,12 +4,12 @@ Plex, Tautulli, Radarr, Sonarr, Nzbget
 
 # Installation
 
-1. Install Docker
-1. Install Docker Compose
+1. Install [Docker][]
+1. Install [Docker Compose][Compose]
 1. Edit `docker-compose.yml`:
    - Replace all instances of `/drobo/` in each of the `volumes` section with
      the location of your media.
-   - Append your plex claim token to the line with `PLEX_CLAIM=`
+   - Append your [plex claim token][Claim] to the line with `PLEX_CLAIM=`
    - Probably more that I can't think of...
 1. Run `docker-compose up -d`
 
@@ -37,3 +37,7 @@ address=/space-heater/10.0.0.2
 
 Please feel free to help me out by opening an issue or creating a Pull Request.
 This is just a personal pet project so there won't be a lot of structure to it.
+
+  [Claim]: https://www.plex.tv/claim/
+  [Compose]: https://docs.docker.com/compose/
+  [Docker]: https://hub.docker.com/search/?type=edition&offering=community
